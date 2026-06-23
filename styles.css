@@ -175,6 +175,66 @@ header p {
 .quick-btn:hover { border-color: var(--text-muted); color: var(--text); }
 .quick-btn.active { background: var(--blue-dim); border-color: var(--blue); color: #fff; }
 
+/* ── Custom Dropdown ── */
+.cs {
+  position: relative;
+  user-select: none;
+}
+.cs-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  font-family: var(--font);
+  font-size: 0.82rem;
+  padding: 0.55rem 0.6rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.cs-trigger:hover { border-color: var(--text-muted); }
+.cs.open .cs-trigger { border-color: var(--blue); color: #fff; }
+
+.cs-arrow {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  margin-left: 0.5rem;
+  transition: transform 0.2s ease;
+}
+.cs.open .cs-arrow { transform: rotate(180deg); }
+
+.cs-options {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-height: 240px;
+  overflow-y: auto;
+  display: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+}
+.cs.open .cs-options { display: block; }
+
+.cs-option {
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.08s, color 0.08s;
+}
+.cs-option:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+.cs-option:last-child  { border-radius: 0 0 var(--radius) var(--radius); }
+.cs-option:hover { background: var(--surface-2); color: #fff; }
+.cs-option.selected { color: var(--blue); }
+
 .src-note {
   font-size: 0.65rem;
   color: var(--text-muted);

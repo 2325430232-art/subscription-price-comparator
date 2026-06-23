@@ -22,7 +22,7 @@ const els = {
   footEPV: $('footEPV'),
   churnSlider: $('churnSlider'),
   sliderVal: $('sliderVal'),
-  churnPreset: $('churnPreset'),
+  churnPresetWrapper: $('churnPresetWrapper'),
   discountPresets: $('discountPresets'),
   inflationPresets: $('inflationPresets'),
   discountSrc: $('discountSrc'),
@@ -30,6 +30,82 @@ const els = {
   churnSrc: $('churnSrc'),
   dataDate: $('dataDate'),
 };
+
+// ── Custom Dropdown ──
+class CustomSelect {
+  constructor(container) {
+    this.container = container;
+    this.container.className = 'cs input-row';
+    this.value = '';
+    this.options = [];
+    this._onSelect = null;
+
+    this.trigger = document.createElement('div');
+    this.trigger.className = 'cs-trigger';
+    this.trigger.textContent = '品类快捷填充（选填）';
+    this.trigger.addEventListener('click', () => this.toggle());
+
+    this.arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    this.arrow.setAttribute('viewBox', '0 0 24 24');
+    this.arrow.setAttribute('width', '12');
+    this.arrow.setAttribute('height', '12');
+    this.arrow.classList.add('cs-arrow');
+    this.arrow.innerHTML = '<path d="m6 9 6 6 6-6" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    this.trigger.appendChild(this.arrow);
+
+    this.optionsPanel = document.createElement('div');
+    this.optionsPanel.className = 'cs-options';
+
+    this.container.appendChild(this.trigger);
+    this.container.appendChild(this.optionsPanel);
+
+    this._closeHandler = (e) => {
+      if (!this.container.contains(e.target)) this.close();
+    };
+  }
+
+  setOptions(categories) {
+    this.options = categories;
+    this.optionsPanel.innerHTML = '';
+    for (const cat of categories) {
+      const opt = document.createElement('div');
+      opt.className = 'cs-option';
+      opt.textContent = `${cat.label}（约 ${cat.value.toFixed(1)}%/月）`;
+      opt.addEventListener('click', () => {
+        this.select(cat.value, opt);
+      });
+      this.optionsPanel.appendChild(opt);
+    }
+  }
+
+  toggle() {
+    this.container.classList.contains('open') ? this.close() : this.open();
+  }
+
+  open() {
+    this.container.classList.add('open');
+    document.addEventListener('click', this._closeHandler, { once: true });
+  }
+
+  close() {
+    this.container.classList.remove('open');
+    document.removeEventListener('click', this._closeHandler);
+  }
+
+  select(value, optEl) {
+    this.value = value;
+    this.trigger.firstChild.textContent = optEl.textContent;
+    this.trigger.style.color = '#fff';
+    for (const child of this.optionsPanel.children) {
+      child.classList.remove('selected');
+    }
+    optEl.classList.add('selected');
+    this.close();
+    if (this._onSelect) this._onSelect(value);
+  }
+
+  onSelect(fn) { this._onSelect = fn; }
+}
 
 // ── 数学模型 ──
 // d = (1-c) / ((1+r)(1+π))
@@ -324,22 +400,14 @@ function buildInflationPresets(value, source) {
 }
 
 function buildChurnPresets(categories) {
-  els.churnPreset.innerHTML = '<option value="">— 品类快捷填充（选填）—</option>';
-  for (const cat of categories) {
-    const opt = document.createElement('option');
-    opt.value = cat.value;
-    opt.textContent = `${cat.label}（约 ${cat.value.toFixed(1)}%/月）`;
-    els.churnPreset.appendChild(opt);
-  }
-  els.churnPreset.addEventListener('change', () => {
-    const val = parseFloat(els.churnPreset.value);
-    if (!isNaN(val)) {
-      els.churnRate.value = val;
-      els.churnSlider.value = Math.min(30, Math.max(0, val));
-      els.sliderVal.textContent = val.toFixed(1) + '%';
-      recalc();
-      debouncedSaveURL();
-    }
+  const cs = new CustomSelect(els.churnPresetWrapper);
+  cs.setOptions(categories);
+  cs.onSelect((val) => {
+    els.churnRate.value = val;
+    els.churnSlider.value = Math.min(30, Math.max(0, val));
+    els.sliderVal.textContent = val.toFixed(1) + '%';
+    recalc();
+    debouncedSaveURL();
   });
 
   if (benchmarks?.churn_benchmarks?.source) {

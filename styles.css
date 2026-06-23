@@ -125,10 +125,26 @@ header p {
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
+  color-scheme: dark;
+  background-color: var(--surface-2);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right center;
   padding-right: 1.2rem;
+}
+.input-row select option {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* ── Hide number input spinners ── */
+.input-row input[type="number"] {
+  -moz-appearance: textfield;
+}
+.input-row input[type="number"]::-webkit-inner-spin-button,
+.input-row input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .input-row .suffix {
   color: var(--text-dim);

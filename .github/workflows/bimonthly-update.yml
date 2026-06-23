@@ -1,0 +1,42 @@
+name: Bimonthly Benchmarks Update
+
+on:
+  schedule:
+    # 每 2 个月的 1 号 UTC 00:00 运行
+    - cron: '0 0 1 */2 *'
+  workflow_dispatch:
+    # 允许手动触发
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run update script
+        run: node scripts/update-benchmarks.js
+
+      - name: Check for changes
+        id: check
+        run: |
+          if git diff --quiet data/benchmarks.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "benchmarks-bot"
+          git config user.email "bot@subscription-calculator.local"
+          git add data/benchmarks.json
+          git commit -m "chore: update benchmarks data [skip ci]"
+          git push

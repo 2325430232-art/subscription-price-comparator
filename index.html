@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>订阅价格比较器</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>订阅价格比较器</h1>
+    <p>折现率 · 通胀率 · 退订率 — 看清你的订阅真实成本</p>
+  </header>
+
+  <div class="main-grid">
+
+    <!-- Left: 核心输入 -->
+    <div>
+      <div class="card">
+        <h2>订阅价格</h2>
+        <div class="field">
+          <label>月付价格 <span class="hint">每月标价</span></label>
+          <div class="input-row">
+            <span class="prefix">¥</span>
+            <input type="number" id="monthlyPrice" value="30" min="0" step="0.01" placeholder="30">
+          </div>
+        </div>
+        <div class="field">
+          <label>年付价格 <span class="hint">一次性年付标价</span></label>
+          <div class="input-row">
+            <span class="prefix">¥</span>
+            <input type="number" id="yearlyPrice" value="288" min="0" step="0.01" placeholder="288">
+          </div>
+        </div>
+        <div class="field">
+          <label>首月折扣 <span class="hint">首月减免金额</span></label>
+          <div class="input-row">
+            <span class="prefix">¥</span>
+            <input type="number" id="firstMonthDiscount" value="0" min="0" step="0.01" placeholder="0">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: 参数 -->
+    <div>
+      <div class="card">
+        <h2>基准参数</h2>
+        <div class="field">
+          <label>月折现率 <span class="hint">你的资金机会成本</span></label>
+          <div class="input-row">
+            <input type="number" id="discountRate" value="0.21" min="0" max="100" step="0.01" placeholder="0.21">
+            <span class="suffix">%/月</span>
+          </div>
+          <div class="quick-btns" id="discountPresets"></div>
+          <div class="src-note" id="discountSrc"></div>
+        </div>
+        <div class="field">
+          <label>月通胀率 <span class="hint">货币购买力下降速度</span></label>
+          <div class="input-row">
+            <input type="number" id="inflationRate" value="0.17" min="0" max="100" step="0.01" placeholder="0.17">
+            <span class="suffix">%/月</span>
+          </div>
+          <div class="quick-btns" id="inflationPresets"></div>
+          <div class="src-note" id="inflationSrc"></div>
+        </div>
+        <div class="field">
+          <label>月退订率 <span class="hint">每月流失概率</span></label>
+          <div class="input-row">
+            <input type="number" id="churnRate" value="5" min="0" max="100" step="0.1" placeholder="5">
+            <span class="suffix">%/月</span>
+          </div>
+          <div style="margin-top: 0.3rem;">
+            <div class="input-row">
+              <select id="churnPreset">
+                <option value="">— 品类快捷填充（选填）—</option>
+              </select>
+            </div>
+          </div>
+          <div class="src-note" id="churnSrc"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card" style="margin-top: 1.25rem;">
+    <h2>比较结果</h2>
+    <div class="result-cards">
+      <div class="result-card">
+        <div class="label">月付等效年成本</div>
+        <div class="value" id="epvValue">¥263.18</div>
+        <div class="sub" id="epvSub">期望现值</div>
+      </div>
+      <div class="result-card">
+        <div class="label">年付价格</div>
+        <div class="value" id="yearValue">¥288.00</div>
+        <div class="sub" id="yearSub">标价</div>
+      </div>
+    </div>
+    <div class="conclusion" id="conclusion"></div>
+    <div class="breakeven" id="breakeven"></div>
+  </div>
+
+  <!-- Monthly breakdown -->
+  <div class="section-title">月度明细</div>
+  <div style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>月份</th>
+          <th>支付</th>
+          <th>存活概率</th>
+          <th>折现因子</th>
+          <th>期望现值</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+      <tfoot>
+        <tr>
+          <td>合计</td>
+          <td id="footPay"></td>
+          <td>—</td>
+          <td>—</td>
+          <td id="footEPV"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Sensitivity -->
+  <div class="section-title">敏感性分析：拖动退订率</div>
+  <div class="card">
+    <div class="slider-group">
+      <label>退订率 <span id="sliderVal">5.0%</span></label>
+      <input type="range" id="churnSlider" min="0" max="30" step="0.1" value="5">
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">
+      <span>0%</span><span>15%</span><span>30%</span>
+    </div>
+  </div>
+
+  <footer>
+    <span>数据来源：国家统计局 CPI · 中债国债收益率 · Recurly Research · Churnkey</span>
+    <span id="dataDate"></span>
+  </footer>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

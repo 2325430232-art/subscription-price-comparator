@@ -1,0 +1,30 @@
+{
+  "last_updated": "2026-06-23",
+  "inflation_monthly": 0.17,
+  "inflation_annual_pct": 2.0,
+  "discount_monthly": {
+    "conservative": 0.13,
+    "neutral": 0.21,
+    "aggressive": 0.42
+  },
+  "churn_benchmarks": {
+    "source": "Recurly Research (2024), Churnkey (2026.01)",
+    "maintenance": "manual",
+    "next_review": "2026-12",
+    "categories": {
+      "video_streaming": { "label": "视频流媒体", "monthly_churn": 0.055 },
+      "music_streaming": { "label": "音乐流媒体", "monthly_churn": 0.02 },
+      "cloud_storage": { "label": "云存储/网盘", "monthly_churn": 0.02 },
+      "saas_tools": { "label": "SaaS/工具软件", "monthly_churn": 0.048 },
+      "fitness": { "label": "健身/健康", "monthly_churn": 0.12 },
+      "education": { "label": "教育/学习", "monthly_churn": 0.076 },
+      "news_media": { "label": "新闻/媒体", "monthly_churn": 0.09 },
+      "gaming": { "label": "游戏通行证", "monthly_churn": 0.10 },
+      "shopping": { "label": "电商会员", "monthly_churn": 0.066 }
+    }
+  },
+  "sources": {
+    "inflation": "国家统计局 CPI（近12月均值）",
+    "discount": "中债10年期国债收益率 → 月化近似"
+  }
+}
